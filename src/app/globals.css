@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-ink text-paper font-sans antialiased;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(95, 212, 208, 0.08), transparent),
+      radial-gradient(ellipse 60% 40% at 100% 0%, rgba(242, 169, 59, 0.06), transparent);
+    background-attachment: fixed;
+  }
+  ::selection {
+    background-color: rgba(242, 169, 59, 0.35);
+    color: #0b1320;
+  }
+  :focus-visible {
+    outline: 2px solid #5fd4d0;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1f2b40;
+    border-radius: 8px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #28615f;
+  }
+}
+
+@layer utilities {
+  .text-mono-num {
+    font-family: var(--font-mono);
+    letter-spacing: -0.01em;
+  }
+  .scope-grid {
+    background-image:
+      linear-gradient(rgba(95, 212, 208, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(95, 212, 208, 0.06) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
