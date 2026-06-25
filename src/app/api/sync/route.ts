@@ -2,10 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireUid } from "@/lib/session";
 import { db, COLLECTIONS } from "@/lib/firebase/admin";
 import { syncAccountEmails } from "@/lib/google/gmail";
-import { analyzeUnanalyzedEmails } from "@/lib/ai/classify";
 import type { ConnectedAccount } from "@/lib/types";
 
-export const maxDuration = 60; // seconds — raise on Vercel Pro/Enterprise if needed
+// Gmail fetch only — classification happens in separate /api/analyze
+// call(s) kicked off by the client right after this resolves, so the two
+// don't compete for the same time budget and blow the function timeout.
+export const maxDuration = 120;
 
 export async function POST(request: NextRequest) {
   let uid: string;
@@ -46,14 +48,9 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  const { analyzed, remaining, quotaExhausted } = await analyzeUnanalyzedEmails(uid);
-
   return NextResponse.json({
     newEmails: totalNewEmails,
     accountsSynced,
-    analyzed,
-    moreToAnalyze: remaining,
-    quotaExhausted,
     errors,
   });
 }

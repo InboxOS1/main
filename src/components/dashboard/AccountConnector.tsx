@@ -32,10 +32,25 @@ export function AccountConnector({ accounts }: { accounts: ConnectedAccount[] })
         body: JSON.stringify({ accountId }),
       });
       if (!res.ok) throw new Error((await res.json().catch(() => null))?.error ?? "Sync failed.");
-      const data = await res.json();
-      const message = data.quotaExhausted
-        ? `Synced ${data.newEmails ?? 0} new emails, analyzed ${data.analyzed ?? 0} before hitting your Gemini API quota. Sync again later to continue.`
-        : `Synced ${data.newEmails ?? 0} new emails, analyzed ${data.analyzed ?? 0}.`;
+      const syncData = await res.json();
+
+      let totalAnalyzed = 0;
+      let quotaExhausted = false;
+      for (let i = 0; i < 10; i++) {
+        const analyzeRes = await fetch("/api/analyze", { method: "POST" });
+        if (!analyzeRes.ok) break;
+        const analyzeData = await analyzeRes.json();
+        totalAnalyzed += analyzeData.analyzed ?? 0;
+        if (analyzeData.quotaExhausted) {
+          quotaExhausted = true;
+          break;
+        }
+        if (!analyzeData.remaining) break;
+      }
+
+      const message = quotaExhausted
+        ? `Synced ${syncData.newEmails ?? 0} new emails, analyzed ${totalAnalyzed} before hitting your Gemini API quota. Sync again later to continue.`
+        : `Synced ${syncData.newEmails ?? 0} new emails, analyzed ${totalAnalyzed}.`;
       toast.success(message);
       router.refresh();
     } catch (err) {

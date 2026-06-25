@@ -57,7 +57,7 @@ export const EMAILS_PER_ACCOUNT_SYNC = 200;
 /** Cap on emails classified per single /api/analyze invocation, to stay
  *  inside a serverless function's time budget. Remaining emails are
  *  picked up by the next sync/analyze call or the daily cron. */
-export const MAX_EMAILS_PER_ANALYZE_BATCH = 40;
+export const MAX_EMAILS_PER_ANALYZE_BATCH = 15;
 
 export const SESSION_COOKIE_NAME = "__session";
 export const SESSION_COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 14; // 14 days
