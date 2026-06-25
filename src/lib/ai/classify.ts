@@ -79,8 +79,7 @@ export async function analyzeUnanalyzedEmails(
   let analyzed = 0;
   let quotaExhausted = false;
 
-  for (let i = 0; i < batch.length; i++) {
-    const email = batch[i];
+  for (const [i, email] of batch.entries()) {
     try {
       const analysis = await classifyEmail(email);
       await db.collection(COLLECTIONS.analysis).doc(email.emailId).set(analysis);
