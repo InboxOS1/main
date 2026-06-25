@@ -33,7 +33,10 @@ export function AccountConnector({ accounts }: { accounts: ConnectedAccount[] })
       });
       if (!res.ok) throw new Error((await res.json().catch(() => null))?.error ?? "Sync failed.");
       const data = await res.json();
-      toast.success(`Synced ${data.newEmails ?? 0} new emails, analyzed ${data.analyzed ?? 0}.`);
+      const message = data.quotaExhausted
+        ? `Synced ${data.newEmails ?? 0} new emails, analyzed ${data.analyzed ?? 0} before hitting your Gemini API quota. Sync again later to continue.`
+        : `Synced ${data.newEmails ?? 0} new emails, analyzed ${data.analyzed ?? 0}.`;
+      toast.success(message);
       router.refresh();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Sync failed.");

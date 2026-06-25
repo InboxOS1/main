@@ -46,13 +46,14 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  const { analyzed, remaining } = await analyzeUnanalyzedEmails(uid);
+  const { analyzed, remaining, quotaExhausted } = await analyzeUnanalyzedEmails(uid);
 
   return NextResponse.json({
     newEmails: totalNewEmails,
     accountsSynced,
     analyzed,
     moreToAnalyze: remaining,
+    quotaExhausted,
     errors,
   });
 }

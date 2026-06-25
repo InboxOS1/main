@@ -55,7 +55,9 @@ function getHeader(message: gmail_v1.Schema$Message, name: string): string {
 function parseSender(fromHeader: string): { name: string; email: string } {
   const match = fromHeader.match(/^(.*?)\s*<(.+)>$/);
   if (match) {
-    return { name: match[1].replace(/"/g, "").trim() || match[2], email: match[2].trim().toLowerCase() };
+    const rawName = match[1] ?? "";
+    const rawEmail = (match[2] ?? "").trim().toLowerCase();
+    return { name: rawName.replace(/"/g, "").trim() || rawEmail, email: rawEmail };
   }
   return { name: fromHeader.trim(), email: fromHeader.trim().toLowerCase() };
 }
