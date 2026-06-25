@@ -23,13 +23,13 @@ function sleep(ms: number) {
 /** Parses Gemini's "Please retry in 651.39504ms." / "...in 57.948274064s." hint out of an error body. */
 function parseRetryDelayMs(errorText: string): number | null {
   const msMatch = errorText.match(/retry in ([\d.]+)ms/i);
-  if (msMatch) return Math.ceil(parseFloat(msMatch[1]));
+  if (msMatch?.[1]) return Math.ceil(parseFloat(msMatch[1]));
   const sMatch = errorText.match(/retry in ([\d.]+)s/i);
-  if (sMatch) return Math.ceil(parseFloat(sMatch[1]) * 1000);
+  if (sMatch?.[1]) return Math.ceil(parseFloat(sMatch[1]) * 1000);
   return null;
 }
 
-class GeminiQuotaExhaustedError extends Error {}
+class GeminiQuotaExhaustedError extends Error { }
 
 export async function generateJSON<T>({
   systemInstruction,
